@@ -23,13 +23,13 @@ public class primeGen {
         double false_positive_prob = 1E-6;
         int rabin_miller_rounds = (int)(java.lang.Math.ceil(-java.lang.Math.log(false_positive_prob) / java.lang.Math.log(4)));
         int x = (bitLength - 512) / 128;
-        BigInteger sqrtOfTwo = BigInteger("14142135623730950489").divide(new BigInteger("10000000000000000000"))
+        BigInteger sqrtOfTwo = (new BigInteger("14142135623730950489")).divide(new BigInteger("10000000000000000000"));
         BigInteger lower_bound = sqrtOfTwo.multiply(One.shiftLeft(511 + 128 * x));
         BigInteger upper_bound = One.shiftLeft(512 + 128 * x).subtract(One);
         BigInteger X = Math.randomRange(lower_bound, upper_bound);
 
 
-        BigInteger[] p = {BigInteger.ZERO, BigInteger.ZERO};
+        BigInteger[] p = {Zero, Zero};
         for (int i = 0; i < 2; i++) {
             p[i] = Math.randomPrime(101);
         }
@@ -40,8 +40,8 @@ public class primeGen {
         while (!Math.isProbablePrime(X, rabin_miller_rounds)) {
             X = X.add(increment);
 
-            if (X.bitLength() > N) {
-                throw new RuntimeException("Couldn't find prime of size " + N);
+            if (X.bitLength() > bitLength) {
+                throw new RuntimeException("Couldn't find prime of size " + bitLength);
             }
         }
         return X;

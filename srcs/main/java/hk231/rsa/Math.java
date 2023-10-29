@@ -3,8 +3,9 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public class Math {
-    static final BigInteger One = BigInteger.ONE;
     static final BigInteger Zero = BigInteger.ZERO;
+    static final BigInteger One = BigInteger.ONE;
+    static final BigInteger Two = BigInteger.TWO;
 
     private static SecureRandom rng = new SecureRandom();
     public static final BigInteger SMALL_PRIME_PRODUCT = BigInteger.valueOf(2L * 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23 * 29 * 31 * 37 * 41);
@@ -34,6 +35,72 @@ public class Math {
         return a.add(min);
     }
 
+    // Generate a random number of the specified bit length in the range 2^(bits-1)
+    // and 2^bits-1
+    public static BigInteger randomBigInteger(int bitLength) {
+        if (bitLength < 2) {
+            throw new ArithmeticException("Prime size must be at least 2 bits");
+        }
+        BigInteger min = One.shiftLeft(bitLength - 1);
+        BigInteger max = One.shiftLeft(bitLength).subtract(One);
+        return randomRange(min, max);
+    }
+
+    // Thuật toán như sau:
+    // - Nếu số mũ là lẻ thì result = result * base % modulus
+    // - Nếu số mũ là chẵn thì base = base * base % modulus
+    // - Lấy số mũ chia 2
+    // Khi số mũ bằng 0 thì dừng
+    // Thuật toán có dạng chứng minh như sau:
+    // base ^ exponent % modulus = (((base ^ 2) ^ (exponent // 2) % modulus)* (base ^ (exponent % 2) % modulus)) mod
+    // modulus
+    static BigInteger modPow(BigInteger base, BigInteger exponent, BigInteger modulus) {
+//        if (exponent.bitLength() < 32) {
+//            return modPow(base, exponent.intValue(), modulus);
+//        }
+        BigInteger result = BigInteger.ONE;
+        while (exponent.compareTo(Zero) > 0) {
+            // Check if exponent is even or odd
+            if (exponent.testBit(0)) {
+                result = result.multiply(base).mod(modulus);
+            }
+            // // Find new base by multiply base itself and mod with modolus
+            base = base.multiply(base).mod(modulus);
+            // Div exponent by 2
+            exponent = exponent.shiftRight(1);
+        }
+        return result;
+    }
+
+    // Fermat Test
+    public static boolean fermatTestBase(BigInteger num, BigInteger base) {
+        return modPow(base, num.subtract(One), num).equals(One);
+    }
+
+    public static boolean isProbablePrime(BigInteger num, int k) {
+        // Check if num is negative, return false
+        if (!num.testBit(0)) {
+            return false;
+        }
+
+        // Check if num is smaller than 3, return true
+        if (num.compareTo(BigInteger.valueOf(3)) <= 0) {
+            return true;
+        }
+
+        // Apply fermat test with base 2
+        if (!fermatTestBase(num, Two)) {
+            return false;
+        }
+
+        //
+        if (gcd(num, SMALL_PRIME_PRODUCT).compareTo(One) != 0) {
+            return false;
+        }
+
+        return millerRabinTest(num, BigInteger.valueOf(k));
+    }
+
     public static BigInteger randomPrime(int bitLength) {
         while (true) {
             BigInteger a = Math.randomBigInteger(bitLength);
@@ -43,75 +110,32 @@ public class Math {
         }
     }
 
-    // Thuật toán như sau:
-    // - Nếu số mũ là lẻ thì result = result * base % modulus
-    // - Nếu số mũ là chẵn thì base = base * base % modulus
-    // - Lấy số mũ chia 2
-    // Khi số mũ bằng 0 thì dừng
-    // Thuật toán có dạng chứng minh như sau:
-    // base ^ exponent % modulus = (((base ^ 2) ^ (exponent // 2) % modulus)* (base
-    // ^ (exponent % 2) % modulus)) mod modulus
-    static BigInteger modPow(BigInteger base, BigInteger exponent, BigInteger modulus) {
-        if (exponent.bitLength() < 32) {
-            return modPow(base, exponent.intValue(), modulus);
-        }
-        BigInteger result = BigInteger.ONE;
-
-        while (exponent.compareTo(BigInteger.ZERO) > 0) {
-
-            // ta kiểm tra xem số mũ có chẵn hay lẻ
-            if (exponent.testBit(0)) {
-                result = result.multiply(base).mod(modulus);
-            }
-            // Sau đó base mũ 2 rồi phần trăm cho modulus để tìm base mới
-            base = base.multiply(base).mod(modulus);
-            // Lấy số mũ chia 2
-            exponent = exponent.shiftRight(1);
-        }
-        return result;
-    }
-
-    static BigInteger modPow(BigInteger base, int exponent, BigInteger modulus) {
-        /**
-         * Thuật toán như sau:
-         * - Nếu số mũ là lẻ thì result = result * base % modulus
-         * - Nếu số mũ là chẵn thì base = base * base % modulus
-         * - Lấy số mũ chia 2
-         * Khi số mũ bằng 0 thì dừng
-         * Thuật toán có dạng chứng minh như sau:
-         * base ^ exponent % modulus = (((base ^ 2) ^ (exponent // 2) % modulus)* (base
-         * ^ (exponent % 2) % modulus)) mod modulus
-         */
-        BigInteger result = BigInteger.ONE;
-
-        while (exponent > 0) {
-
-            // ta kiểm tra xem số mũ có chẵn hay lẻ
-            if (exponent % 2 == 1) {
-                result = result.multiply(base).mod(modulus);
-            }
-            // Sau đó base mũ 2 rồi phần trăm cho modulus để tìm base mới
-            base = base.multiply(base).mod(modulus);
-            // Lấy số mũ chia 2
-            exponent = exponent >> 1;
-        }
-        return result;
-    }
-
-
-
-
-    // Generate a random number of the specified bit length in the range 2^(bits-1)
-    // and 2^bits-1
-    // since small primes are not considered to be secure.
-    public static BigInteger randomBigInteger(int bitLength) {
-        if (bitLength < 2) {
-            throw new ArithmeticException("Prime size must be at least 2 bits");
-        }
-        BigInteger min = BigInteger.ONE.shiftLeft(bitLength - 1);
-        BigInteger max = BigInteger.ONE.shiftLeft(bitLength).subtract(BigInteger.ONE);
-        return randomRange(min, max);
-    }
+//    static BigInteger modPow(BigInteger base, int exponent, BigInteger modulus) {
+//        /**
+//         * Thuật toán như sau:
+//         * - Nếu số mũ là lẻ thì result = result * base % modulus
+//         * - Nếu số mũ là chẵn thì base = base * base % modulus
+//         * - Lấy số mũ chia 2
+//         * Khi số mũ bằng 0 thì dừng
+//         * Thuật toán có dạng chứng minh như sau:
+//         * base ^ exponent % modulus = (((base ^ 2) ^ (exponent // 2) % modulus)* (base
+//         * ^ (exponent % 2) % modulus)) mod modulus
+//         */
+//        BigInteger result = BigInteger.ONE;
+//
+//        while (exponent > 0) {
+//
+//            // ta kiểm tra xem số mũ có chẵn hay lẻ
+//            if (exponent % 2 == 1) {
+//                result = result.multiply(base).mod(modulus);
+//            }
+//            // Sau đó base mũ 2 rồi phần trăm cho modulus để tìm base mới
+//            base = base.multiply(base).mod(modulus);
+//            // Lấy số mũ chia 2
+//            exponent = exponent >> 1;
+//        }
+//        return result;
+//    }
 
     public static BigInteger gordonStrongPrime(int bitLen) {
 
@@ -146,7 +170,6 @@ public class Math {
         }
 
         return p;
-        // return BigInteger.ZERO;
     }
 
     public static BigInteger randomSecondBigInteger(BigInteger prime1, int bitLength) {
@@ -212,31 +235,6 @@ public class Math {
             x = x.add(phi);
         }
         return x;
-    }
-
-    public static BigInteger probableStrongPrime() {
-        // TODO
-        return BigInteger.ONE;
-    }
-
-    public static boolean isProbablePrime(BigInteger n, int k) {
-        if (!n.testBit(0)) {
-            return false;
-        }
-        if (n.compareTo(BigInteger.valueOf(3)) <= 0) {
-            return true;
-        }
-        if (!fermatTestBase(n, BigInteger.valueOf(2))) {
-            return false;
-        }
-        if (gcd(n, SMALL_PRIME_PRODUCT).compareTo(BigInteger.ONE) != 0) {
-            return false;
-        }
-        return millerRabinTest(n, BigInteger.valueOf(k));
-    }
-
-    public static boolean fermatTestBase(BigInteger n, BigInteger a) {
-        return modPow(a,n.subtract(BigInteger.ONE), n).equals(BigInteger.ONE);
     }
 
     // millerRabinTest takes a BigInteger n and an integer k as input and returns
@@ -365,4 +363,4 @@ public class Math {
 //        }
 //        return X;
 //    }
-//}
+}
