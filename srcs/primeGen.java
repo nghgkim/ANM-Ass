@@ -27,8 +27,9 @@ public class primeGen {
         BigInteger lower_bound = sqrtOfTwo.multiply(One.shiftLeft(511 + 128 * x));
         BigInteger upper_bound = One.shiftLeft(512 + 128 * x).subtract(One);
         BigInteger X = Math.randomRange(lower_bound, upper_bound);
-        BigInteger[] p = { BigInteger.ZERO, BigInteger.ZERO };
 
+
+        BigInteger[] p = {BigInteger.ZERO, BigInteger.ZERO};
         for (int i = 0; i < 2; i++) {
             p[i] = Math.randomPrime(101);
         }
