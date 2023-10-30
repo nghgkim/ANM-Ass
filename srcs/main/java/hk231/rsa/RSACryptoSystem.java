@@ -11,12 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-
 import javax.crypto.SecretKey;
 
 public class RSACryptoSystem {
-//    private PublicKey publicKey;
-//    private PrivateKey privateKey;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
     private BigInteger bitLength;
 
     public RSACryptoSystem(int keyBitLength) {
@@ -28,17 +27,17 @@ public class RSACryptoSystem {
         BigInteger q = primeGen.generate(keyBitLength / 2);
 
         // Calculate n = p * q
-//        BigInteger n = p.multiply(q);
-//
-//        // Calculate phi(n) = (p - 1) * (q - 1)
-//        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-//
-//        // Choose e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1
-//        BigInteger e;
-//        do {
-//            e = new BigInteger(phi.bitLength(), random);
-//        } while (e.compareTo(BigInteger.ONE) <= 0 || e.compareTo(phi) >= 0 || !Math.gcd(e, phi).equals(BigInteger.ONE));
-//
+        BigInteger n = p.multiply(q);
+
+        // Calculate phi(n) = (p - 1) * (q - 1)
+        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+
+        // Choose e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1
+        BigInteger e;
+        do {
+            e = new BigInteger(phi.bitLength(), random);
+        } while (e.compareTo(BigInteger.ONE) <= 0 || e.compareTo(phi) >= 0 || !Math.gcd(e, phi).equals(BigInteger.ONE));
+
 //        // Calculate d = e^(-1) mod phi(n)
 //        BigInteger d = Math.modInverse(e, phi);
 //
@@ -100,6 +99,7 @@ public class RSACryptoSystem {
 //    }
 //
     public static void main(String[] args) {
+        System.out.println("Success");
 //
 //        if (args.length == 0) {
 //            System.out.println("Usage:");
