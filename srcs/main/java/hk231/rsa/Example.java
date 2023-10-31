@@ -15,7 +15,7 @@ import javax.crypto.SecretKey;
 
 import hk231.rsa.RSACryptoSystem;
 public class Example {
-    private static void example1(RSACryptoSystem rsa) {
+    public static void example1(RSACryptoSystem rsa) {
 
         /**
          * Example 1: Encrypt and decrypt a message
@@ -30,7 +30,7 @@ public class Example {
 
     }
 
-    private static void example2(RSACryptoSystem rsa) {
+    public static void example2(RSACryptoSystem rsa) {
         /**
          * Example 2: Encrypt and decrypt a file
          */
@@ -88,7 +88,7 @@ public class Example {
         }
     }
 
-    private static void example3(RSACryptoSystem rsa) {
+    public static void example3(RSACryptoSystem rsa) {
         /**
          * Example 3: Encrypt and decrypt a file using public and private key files
          */
