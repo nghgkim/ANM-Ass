@@ -59,29 +59,15 @@ public class Math {
         return randomRange(min, max);
     }
 
-    // Thuật toán như sau:
-    // - Nếu số mũ là lẻ thì result = result * base % modulus
-    // - Nếu số mũ là chẵn thì base = base * base % modulus
-    // - Lấy số mũ chia 2
-    // Khi số mũ bằng 0 thì dừng
-    // Thuật toán có dạng chứng minh như sau:
-    // base ^ exponent % modulus = (((base ^ 2) ^ (exponent // 2) % modulus)* (base ^ (exponent % 2) % modulus)) mod
-    // modulus
     static BigInteger modPow(BigInteger base, BigInteger exponent, BigInteger modulus) {
-//        if (exponent.bitLength() < 32) {
-//            return modPow(base, exponent.intValue(), modulus);
-//        }
-        BigInteger result = BigInteger.ONE;
-        while (exponent.compareTo(Zero) > 0) {
-            // Check if exponent is even or odd
-            if (exponent.testBit(0)) {
-                result = result.multiply(base).mod(modulus);
-            }
-            // // Find new base by multiply base itself and mod with modolus
-            base = base.multiply(base).mod(modulus);
-            // Div exponent by 2
+        BigInteger result = One;
+
+        while (exponent.signum() > 0) {
+            if (exponent.testBit(0)) result = (result.multiply(base)).mod(modulus);
+            base = (base.multiply(base)).mod(modulus);
             exponent = exponent.shiftRight(1);
         }
+
         return result;
     }
 

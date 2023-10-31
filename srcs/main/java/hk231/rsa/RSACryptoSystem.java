@@ -175,7 +175,7 @@ public class RSACryptoSystem {
     }
 
     private static void startEncrypt(String[] args, RSACryptoSystem rsa) {
-        if (args.length < 4) {
+        if (args.length < 3) {
             System.out.println("Please specify input and output files.");
             return;
         }
