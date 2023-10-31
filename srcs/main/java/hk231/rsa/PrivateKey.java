@@ -54,10 +54,10 @@ public class PrivateKey implements Key {
 
     public void parsePrivateKey(byte[] encoded) {
         try {
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            RSAPrivateKey privKey = (RSAPrivateKey) kf.generatePrivate(new PKCS8EncodedKeySpec(encoded));
-            this.modulus = privKey.getModulus();
-            this.privateExponent = privKey.getPrivateExponent();
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+            this.modulus = privateKey.getModulus();
+            this.privateExponent = privateKey.getPrivateExponent();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

@@ -23,8 +23,8 @@ public class RSACryptoSystem {
         bitLength = BigInteger.valueOf(keyBitLength);
 
         // Generate p and q, two distinct strong primes
-        BigInteger p = primeGen.generate(keyBitLength / 2);
-        BigInteger q = primeGen.generate(keyBitLength / 2);
+        BigInteger p = PrimeGeneration.generate(keyBitLength / 2);
+        BigInteger q = PrimeGeneration.generate(keyBitLength / 2);
 
         // Calculate n = p * q
         BigInteger n = p.multiply(q);
@@ -64,16 +64,16 @@ public class RSACryptoSystem {
         System.out.println("Generating public and private keys...");
 
         // Write to file
-        String pubKeyFile = "public.der";
+        String publicKeyFile = "public.der";
         try {
             // if file doesnt exists, then create it
-            File file = new File(pubKeyFile);
+            File file = new File(publicKeyFile);
             if (!file.exists()) {
                 file.createNewFile();
                 // print file path
             }
 
-            FileOutputStream fos = new FileOutputStream(pubKeyFile);
+            FileOutputStream fos = new FileOutputStream(publicKeyFile);
             fos.write(publicKey.getEncoded());
             fos.close();
         } catch (Exception e) {
@@ -81,14 +81,14 @@ public class RSACryptoSystem {
             e.printStackTrace();
         }
 
-        String prvKeyFile = "private.der";
+        String privateKeyFile = "private.der";
         try {
 
-            File file = new File(prvKeyFile);
+            File file = new File(privateKeyFile);
             if (!file.exists()) {
                 file.createNewFile();
             }
-            FileOutputStream fos = new FileOutputStream(prvKeyFile);
+            FileOutputStream fos = new FileOutputStream(privateKeyFile);
             fos.write(privateKey.getEncoded());
             fos.close();
         } catch (Exception e) {
@@ -182,7 +182,7 @@ public class RSACryptoSystem {
         //rsa.generateKeyFiles();
         String inputFile = args[1];
         String outputFile = args[2];
-        String pubKeyFile = args[3];
+        String publicKeyFile = args[3];
 
         // read file
         byte[] fileBytes = null;
@@ -195,7 +195,7 @@ public class RSACryptoSystem {
 
         // read public key
         try {
-            File file = new File(pubKeyFile);
+            File file = new File(publicKeyFile);
             FileInputStream fis = new FileInputStream(file);
             byte[] encodedPublicKey = new byte[(int) file.length()];
             fis.read(encodedPublicKey);
@@ -236,11 +236,11 @@ public class RSACryptoSystem {
         }
         String inputFile = args[1];
         String outputFile = args[2];
-        String prvKeyFile = args[3];
+        String privateKeyFile = args[3];
 
         // read private key
         try {
-            File file = new File(prvKeyFile);
+            File file = new File(privateKeyFile);
             FileInputStream fis = new FileInputStream(file);
             byte[] encodedPrivateKey = new byte[(int) file.length()];
             fis.read(encodedPrivateKey);

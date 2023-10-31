@@ -3,7 +3,7 @@ package hk231.rsa;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class primeGen {
+public class PrimeGeneration {
     static final BigInteger One = BigInteger.ONE;
     static final BigInteger Zero = BigInteger.ZERO;
 

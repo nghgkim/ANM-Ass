@@ -51,10 +51,10 @@ public class PublicKey implements Key {
 
     public void parsePublicKey(byte[] encoded) {
         try {
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
-            this.modulus = pubKey.getModulus();
-            this.publicExponent = pubKey.getPublicExponent();
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(encoded));
+            this.modulus = publicKey.getModulus();
+            this.publicExponent = publicKey.getPublicExponent();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
