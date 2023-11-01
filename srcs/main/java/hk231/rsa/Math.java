@@ -132,7 +132,6 @@ public class Math {
             return false;
         }
 
-        //
         if (gcd(num, SMALL_PRIME_PRODUCT).compareTo(One) != 0) {
             return false;
         }
