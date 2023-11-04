@@ -13,6 +13,12 @@ Sau khi thực thi 2 lệnh trên, ta sẽ có các file `.class` trong thư m�
 echo Main-Class: hk231.rsa.RSACryptoSystem > myManifest
 
 jar cfm ./output.jar myManifest -C ./out/ .
+```
 
-java -jar  output.jar
+Để chạy chương trình, ta thực thi lệnh
+```bash
+java -jar  output.jar -example <exampleIndex>
+java -jar  output.jar -generate
+java -jar  output.jar -encrypted <inputFile> <outputFile> <publicKeyFile>
+java -jar  output.jar -decrypted <inputFile> <outputFile> <privateKeyFile>
 ```
